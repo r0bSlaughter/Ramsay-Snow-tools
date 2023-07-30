@@ -1,7 +1,7 @@
-function Connect-Now {
+function Connect-SNow {
 	param(
 		[Parameter(Mandatory = $true)]
-		[ValidateSet("ramsayhealth.service-now.com","ramsayhealthdev.service-now.com")]
+		[ValidateSet("ramsayhealth.service-now.com","ramsayhealthdev.service-now.com","ramsayhealthuat.service-now.com")]
 		[string]$snow = " ",
 
 		[Parameter(Mandatory = $true,HelpMessage = "PSCredential object for SNow user account",ValueFromPipeline = $true)]

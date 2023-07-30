@@ -25,7 +25,7 @@ function Get-BPList {
             [ValidateSet("vwhph35","vwjhc48","vwrch11","vwgph62")]
             [string]$meds,
     
-            [Parameter(Mandatory = $true,HelpMessage = "Eneter the client name bonehead.")]
+            [Parameter(Mandatory = $true,HelpMessage = "Enter the client name bonehead.")]
             [ValidateNotNullOrEmpty()]
             [string]$client,
     

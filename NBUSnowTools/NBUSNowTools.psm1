@@ -39,6 +39,7 @@ virtualmachinemanager
    4.9.1.0 - Bug fixes and minor updates - get-bppol - added Policy Detail Listing, Open-Tickets (ticketnumber), Get-MyWork task listing not showing closed.
    4.9.1.1 - Added Change Tasks 
    5.0.0.1 - Added Formated debuging - Log tracking, CMDB Functions
+   5.1.0.5 - Minor updates - Regex ect.
 #>
 
 
@@ -62,7 +63,7 @@ $searchaduser = (Get-ADUser $standardUser).surname
 $adminUser = $domain += ((Get-ADUser -SearchBase 'OU=Infrastructure,OU=Accounts,OU=Tier 1,OU=Admin,DC=east,DC=wan,DC=ramsayhealth,DC=com,DC=au' -Properties Description -Filter *) | Where-Object { $_.Description -like "*$searchaduser*" }).Name
 $credPath = "C:\temp"
 
-$global:CA02REGX = 'VWIDC\w|MT\w|RHC\w|NTN\w|VAIDC\w|VWGPH\w|VWLMP\w'
+$global:CA02REGX = 'VWIDC\w|MT\w|NTN\w|VAIDC\w|VWLMP\w'
 
 #----------------------------------------------------------[Main Program Functions]----------------------------------------------------------#
 

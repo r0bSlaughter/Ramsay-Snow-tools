@@ -32,7 +32,7 @@ function Get-NBCheckpoint {
         #foreach ($vm in $badvms) {$wrkdata = Find-VM $vm; }
         $global:badchkpnt = Invoke-Command -ComputerName $vmhost -Credential $myadmin -ScriptBlock {
             & 'C:\Program Files\Veritas\Netbackup\bin\nbhypervtool.exe' listNBUCheckpoints -vmname $using:vm
-        } | Out-String 
+        } | Out-String | tee -Variable $worknotes
         Write-Host -ForegroundColor Gray "[VMHOST: $($vmhost)] Checkpoint details for '$($vm)' gathered successully: `n $($badchkpnt)"
         Write-Host -ForegroundColor Gray "If we reported a valid checkpoint, run the 'New-NBIncident' Function to generate a ticket."
     }

@@ -14,7 +14,8 @@ Function Remove-NBCheckpoint {
         .NOTES
             AUTHOR: Rob Slaughter ( System Administrator Ramsay Health Care )
             Email: slaughterr@ramsayhealth.com.au
-            LASTEDIT: 30/05/2019 11:30pm
+            LASTEDIT: 27/07/2023 11:30pm
+            Fix bug - worknotes was defined incorrectly for update. (go figure)
      
        .LINK
             
@@ -51,7 +52,7 @@ Function Remove-NBCheckpoint {
                 } catch { Write-Warning "Failed to validate Table name, because:>  $($Exception.Message)"; break }
                 Write-Host -ForegroundColor Green "Updating $($ticket.number) with results from snapshot cleanup."
                 try {
-                    Update-MyWork -Table $Table -sysid $ticket.sys_id -Values @{ work_notes = "$worknotes" }
+                    Update-MyWork -Table $Table -sysid $ticket.sys_id -Values $worknotes
                 } catch { Write-Warning "Updating Ticket Failed, maybe this will help: $($Exception.Message)" }
             } else {
                 Write-Host -ForegroundColor Gray "results stored in worknotes." $worknotes

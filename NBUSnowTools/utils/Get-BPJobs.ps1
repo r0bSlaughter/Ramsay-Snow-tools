@@ -28,7 +28,7 @@ function Get-BPJobs {
 
 		[Parameter(Mandatory = $true,HelpMessage = "Just pick one numbski")]
 		[ValidateNotNullOrEmpty()]
-		[ValidateSet("vwjhc48","vwhph35","vwgph63")]
+		[ValidateSet("vwjhc48","vwrhc22","vwgph63")]
 		[string]$meds,
 
 		[Parameter(Mandatory = $true,HelpMessage = "Enter number of hours back to start our search from:eg 12 ")]
