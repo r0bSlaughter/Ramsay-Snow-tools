@@ -34,7 +34,7 @@ if($hyperv){ Write-Host -ForegroundColor Cyan "Gathing VHD info"
 $vmms = Read-host {Enter with VMMSite}
 if($vmms){
   $vmhost = findvm $target |select vmhost
-  Get-SCStorageFileShare -VMMServer $vmms -VMHost ($vmhost).vmhost |select @{N="FreeGB";E={ ($_.FreeSpace)/1gb }}, SharePath |tee -variable global:worknotes
+  Get-SCStorageFileShare -VMMServer $vmms -VMHost $vmhost |select @{N="FreeGB";E={ ($_.FreeSpace)/1gb }}, SharePath |tee -variable global:worknotes
   Get-SCStorageFileShare -VMMServer $vmms |?{$_.Name -like 'SN*CTR'}|select Name, @{N="Total Cap GB";E={"{0:n1}" -f ($_.Capacity /1gb)}},@{N="Freebe GB";E={"{0:n1}" -f ($_.FreeSpace /1gb)}}
   Get-SCStoragePool -VMMServer $vmms |select Name, @{N="Total Cap GB";E={"{0:n1}" -f ($_.TotalManagedSpace /1gb)}},@{N="Freebe GB";E={"{0:n1}" -f ($_.RemainingManagedSpace /1gb)}}
   Get-SCStorageDisk -VMMServer $vmms |?{$_.VMHost -like "$vmhost*" }|select DiskVolumes, @{N="Total Capacity GB";E={"{0:n1}" -f ($_.Capacity /1gb)}},@{N="Freebie G's";E={"{0:n1}" -f ($_.AvailableCapacity /1gb)}}
