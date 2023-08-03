@@ -23,7 +23,12 @@ Param(
   [string]$target,
   [switch]$hyperv
 )
-
+$StorageSharepath = @()
+$StorageShare = @()
+$StoragePool = @()
+$StorageDisk = @()
+$StorageVol = @()
+$VMStorage = @()
 
 gwmi -Class cim_storagevolume -ComputerName $target -Credential $myadmin |ft SystemName,Name,Label, @{N="Capacity GB";E={"{0:n1}" -f ($_.Capacity/1gb)}},@{N="Free GB";E={"{0:n1}" -f ($_.FreeSpace/1gb)}}
 gwmi -Class cim_diskpartition -ComputerName $target -Credential $myadmin |Select-Object Name, @{N="Size GB";E={"{0:n1}"-f($_.Size /1gb)}}
@@ -34,11 +39,11 @@ if($hyperv){ Write-Host -ForegroundColor Cyan "Gathing VHD info"
 $vmms = Read-host {Enter with VMMSite}
 if($vmms){
   $vmhost = findvm $target |select vmhost
-  Get-SCStorageFileShare -VMMServer $vmms -VMHost ($vmhost).vmhost |select @{N="FreeGB";E={ ($_.FreeSpace)/1gb }}, SharePath |tee -variable global:worknotes
-  Get-SCStorageFileShare -VMMServer $vmms |?{$_.Name -like 'SN*CTR'}|select Name, @{N="Total Cap GB";E={"{0:n1}" -f ($_.Capacity /1gb)}},@{N="Freebe GB";E={"{0:n1}" -f ($_.FreeSpace /1gb)}}
-  Get-SCStoragePool -VMMServer $vmms |select Name, @{N="Total Cap GB";E={"{0:n1}" -f ($_.TotalManagedSpace /1gb)}},@{N="Freebe GB";E={"{0:n1}" -f ($_.RemainingManagedSpace /1gb)}}
-  Get-SCStorageDisk -VMMServer $vmms |?{$_.VMHost -like "$vmhost*" }|select DiskVolumes, @{N="Total Capacity GB";E={"{0:n1}" -f ($_.Capacity /1gb)}},@{N="Freebie G's";E={"{0:n1}" -f ($_.AvailableCapacity /1gb)}}
-  Get-SCStorageVolume -VMMServer $vmms |?{($_.VMHost -like "$vmhost*") -and ($_.VolumeLabel -like 'VirtualData')}|select VMHost, @{N='Free Capacity GB';E={"{0:n1}" -f ($_.Freespace /1gb)}}, @{N="Used GB";E={"{0:n1}" -f ($_.Capacity /1gb) - ($_.Freespace /1gb)}}
+ $StorageSharepath = Get-SCStorageFileShare -VMMServer $vmms -VMHost ($vmhost).vmhost |select @{N="FreeGB";E={ ($_.FreeSpace)/1gb }}, SharePath 
+ $StorageShare = Get-SCStorageFileShare -VMMServer $vmms |?{$_.Name -like 'SN*CTR'}|select Name, @{N="Total Cap GB";E={"{0:n1}" -f ($_.Capacity /1gb)}},@{N="Freebe GB";E={"{0:n1}" -f ($_.FreeSpace /1gb)}}
+ $storagePool =  Get-SCStoragePool -VMMServer $vmms |select Name, @{N="Total Cap GB";E={"{0:n1}" -f ($_.TotalManagedSpace /1gb)}},@{N="Freebe GB";E={"{0:n1}" -f ($_.RemainingManagedSpace /1gb)}}
+ $StorageDisk Get-SCStorageDisk -VMMServer $vmms |?{$_.VMHost -like "$vmhost*" }|select DiskVolumes, @{N="Total Capacity GB";E={"{0:n1}" -f ($_.Capacity /1gb)}},@{N="Freebie G's";E={"{0:n1}" -f ($_.AvailableCapacity /1gb)}}
+ $StorageVol Get-SCStorageVolume -VMMServer $vmms |?{($_.VMHost -like "$vmhost*") -and ($_.VolumeLabel -like 'VirtualData')}|select VMHost, @{N='Free Capacity GB';E={"{0:n1}" -f ($_.Freespace /1gb)}}, @{N="Used GB";E={"{0:n1}" -f ($_.Capacity /1gb) - ($_.Freespace /1gb)}}
   
   $Global:VMStorage = Get-SCVirtualMachine $target -vmms $vmms |Get-SCVirtualHardDisk |Select Name, VHDType, @{N="Size";E={"{0:n1}" -f ($_.MaximumSize /1gb)}} }
   write-host -ForegroundColor Cyan "What do we see: `n $($VMStorage)"
@@ -47,3 +52,8 @@ if($vmms){
   return $($VMStorage)
 }
 $VMStorage
+$StorageSharepath
+$StorageShare
+$StorageDisk
+$StorageVol
+$storagePool
